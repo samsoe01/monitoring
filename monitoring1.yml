@@ -15,4 +15,5 @@ spec:
     automated:
       prune: true  # Delete resources not defined in Git
     syncOptions:
-    - CreateNamespace=true  # Create namespace if it doesn't exist
+    - CreateNamespace=true
+    - ServerSideApply=true    # Create namespace if it doesn't exist
