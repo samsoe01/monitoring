@@ -1,19 +1,8 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: monitoring
-  namespace: argocd
-spec:
-  destination:
-    server: 'https://kubernetes.default.svc'
-    namespace: monitoring
-  project: default
-  source:
-    repoURL: apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: my-app
-  namespace: argocd
+  name: kube-prometheus-stack
+  namespace: argocd  # Namespace where ArgoCD is installed
 spec:
   destination:
     server: 'https://kubernetes.default.svc'
@@ -30,4 +19,4 @@ spec:
     automated:
       prune: true
     syncOptions:
-      - CreateNamespace=true
+    - CreateNamespace=true  # Create namespace if it doesn't exist
