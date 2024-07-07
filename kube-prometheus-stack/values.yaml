@@ -2105,7 +2105,7 @@ nodeExporter:
     darwin:
       enabled: true
   hostRootFsMount:
-  enabled: false
+    enabled: false
 
   ## ForceDeployDashboard Create dashboard configmap even if nodeExporter deployment has been disabled
   ##
