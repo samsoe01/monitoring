@@ -330,7 +330,7 @@ hostRootFsMount:
   # None, HostToContainer, and Bidirectional. If this field is omitted, then
   # None is used. More information on:
   # https://kubernetes.io/docs/concepts/storage/volumes/#mount-propagation
-  mountPropagation: HostToContainer
+  mountPropagation: ""
 
 # Mount the node's proc file system (/proc) at /host/proc in the container
 hostProcFsMount:
