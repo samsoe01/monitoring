@@ -1,9 +1,11 @@
-# kube-prometheus-stack
+# Monitoring
 
 
 ## Prerequisites
 
 - Helm 3+
+- Docker desktop
+- ArgoCD
 
 ## Get Helm Repository Info
 
