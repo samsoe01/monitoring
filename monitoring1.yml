@@ -11,8 +11,7 @@ spec:
   source:
     repoURL: https://github.com/samsoe01/monitoring
     path: charts/kube-prometheus-stack
-    targetRevision: main
-    # Optional: Provide authentication credentials
+    targetRevision: 61.2.0
      username: samsoe01
      password: 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
   syncPolicy:
