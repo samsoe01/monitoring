@@ -1,18 +1,22 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kube-prometheus-stack
-  namespace: argocd  # Namespace where ArgoCD is installed
+  name: monitoring
+  namespace: argocd
 spec:
   destination:
-    server: 'https://kubernetes.default.svc'  # Kubernetes API server
-    namespace: monitoring  # Namespace where kube-prometheus-stack will be deployed
-  project: default  # ArgoCD project name
+    server: 'https://kubernetes.default.svc'
+    namespace: monitoring
+  project: default
   source:
-    repoURL: https://github.com/samsoe01/monitoring  # URL of your Git repository
-    path: charts/kube-prometheus-stack  # Path to the kube-prometheus-stack chart directory within your repo
+    repoURL: https://github.com/samsoe01/monitoring
+    path: charts/kube-prometheus-stack
+    targetRevision: main
+    # Optional: Provide authentication credentials
+     username: samsoe01
+     password: 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
   syncPolicy:
     automated:
-      prune: true  # Delete resources not defined in Git
+      prune: true
     syncOptions:
-    - CreateNamespace=true  # Create namespace if it doesn't exist
+      - CreateNamespace=true
