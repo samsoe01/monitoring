@@ -9,7 +9,7 @@ spec:
     namespace: monitoring  # Namespace where kube-prometheus-stack will be deployed
   project: default  # ArgoCD project name
   source:
-    repoURL: https://github.com/your-username/your-repo  # URL of your Git repository
+    repoURL: https://github.com/samsoe01/monitoring  # URL of your Git repository
     path: charts/kube-prometheus-stack  # Path to the kube-prometheus-stack chart directory within your repo
   syncPolicy:
     automated:
