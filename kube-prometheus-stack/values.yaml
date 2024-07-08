@@ -323,7 +323,6 @@ alertmanager:
   ##      https://prometheus.io/docs/alerting/notifications/
   ##      https://prometheus.io/docs/alerting/notification_examples/
   tplConfig: true
-  
       telegram-template.tmpl: |-
         {{ define "cluster" }}{{ .ExternalURL | reReplaceAll ".*alertmanager\\.(.*)" "$1" }}{{ end }}
 
