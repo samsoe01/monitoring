@@ -1138,11 +1138,6 @@ grafana:
   ## Configure additional grafana datasources (passed through tpl)
   ## ref: http://docs.grafana.org/administration/provisioning/#datasources
   additionalDataSources:
-    - name: Prometheus
-      type: prometheus
-      url: http://prometheus-kube-prometheus-prometheus.monitoring.svc:9090
-      access: proxy
-      isDefault: true
   additionalDashboards:
     node-exporter-dashboard:
       json: |
