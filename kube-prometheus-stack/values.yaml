@@ -723,7 +723,7 @@ alertmanager:
     #         - example-namespace-2
 
     ## Example which selects all namespaces with label "alertmanagerconfig" set to "enabled"
-     alertmanagerConfigNamespaceSelector:
+    alertmanagerConfigNamespaceSelector:
        matchLabels:
          alertmanagerconfig: enabled
 
