@@ -191,18 +191,18 @@ defaultRules:
 ## Provide custom recording or alerting rules to be deployed into the cluster.
 ##
 additionalPrometheusRulesMap:
-  rule-name: cpuusage
+  rule-name:
     groups:
      - name: cpu-high-usage.rules
        rules:
-       - alert: CPUUsageHigh
-         expr: (100 * (1 - avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])))) > 90
-         for: 1m
-         labels:
-           severity: critical
-         annotations:
-           summary: "High CPU usage detected on {{ $labels.instance }}"
-           description: "CPU usage on {{ $labels.instance }} is {{ humanize $value }}"
+         - alert: CPUUsageHigh
+           expr: (100 * (1 - avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])))) > 90
+           for: 1m
+           labels:
+             severity: critical
+           annotations:
+             summary: "High CPU usage detected on {{ $labels.instance }}"
+             description: "CPU usage on {{ $labels.instance }} is {{ humanize $value }}"
 
 ##
 global:
