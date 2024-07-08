@@ -2104,9 +2104,7 @@ nodeExporter:
       enabled: true
     darwin:
       enabled: true
-  hostRootFsMount:
-    enabled: false
-  mountPropagation: ""
+
 
   ## ForceDeployDashboard Create dashboard configmap even if nodeExporter deployment has been disabled
   ##
@@ -2130,6 +2128,8 @@ prometheus-node-exporter:
       enabled: false
       ipFamilies: ["IPv6", "IPv4"]
       ipFamilyPolicy: "PreferDualStack"
+   hostRootFsMount:
+     enabled: false
   prometheus:
     monitor:
       enabled: true
