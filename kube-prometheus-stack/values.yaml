@@ -1137,7 +1137,61 @@ grafana:
 
   ## Configure additional grafana datasources (passed through tpl)
   ## ref: http://docs.grafana.org/administration/provisioning/#datasources
-  additionalDataSources: []
+  additionalDataSources:
+    - name: Prometheus
+      type: prometheus
+      url: http://prometheus-kube-prometheus-prometheus.monitoring.svc:9090
+      access: proxy
+      isDefault: true
+  additionalDashboards:
+    node-exporter-dashboard:
+      json: |
+        {
+          "annotations": {
+            "list": [
+              {
+                "builtIn": 1,
+                "datasource": "-- Grafana --",
+                "enable": true,
+                "hide": true,
+                "iconColor": "rgba(0, 211, 255, 1)",
+                "name": "Annotations & Alerts",
+                "type": "dashboard"
+              }
+            ]
+          },
+          "panels": [
+            {
+              "datasource": "Prometheus",
+              "targets": [
+                {
+                  "expr": "sum(rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) by (instance)",
+                  "format": "time_series",
+                  "interval": "",
+                  "legendFormat": "{{ instance }}",
+                  "refId": "A"
+                }
+              ],
+              "title": "CPU Usage",
+              "type": "graph"
+            },
+            {
+              "datasource": "Prometheus",
+              "targets": [
+                {
+                  "expr": "sum(node_memory_MemAvailable_bytes) by (instance) / sum(node_memory_MemTotal_bytes) by (instance)",
+                  "format": "time_series",
+                  "interval": "",
+                  "legendFormat": "{{ instance }}",
+                  "refId": "B"
+                }
+              ],
+              "title": "Memory Usage",
+              "type": "graph"
+            }
+          ],
+          "title": "Node Exporter Dashboard"
+        }
   # - name: prometheus-sample
   #   access: proxy
   #   basicAuth: true
@@ -3580,7 +3634,9 @@ prometheus:
     ## PrometheusRules to be selected for target discovery.
     ## If {}, select all PrometheusRules
     ##
-    ruleSelector: {}
+    ruleSelector:
+      matchLabels:
+        role: kube-prometheus-rules
     ## Example which select all PrometheusRules resources
     ## with label "prometheus" with values any of "example-rules" or "example-rules-2"
     # ruleSelector:
