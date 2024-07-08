@@ -1,6 +1,7 @@
 # Default values for kube-prometheus-stack.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+
 ## Provide a name in place of kube-prometheus-stack for `app:` labels
 ##
 nameOverride: ""
@@ -190,19 +191,13 @@ defaultRules:
 
 ## Provide custom recording or alerting rules to be deployed into the cluster.
 ##
-additionalPrometheusRulesMap:
-  rule-name:
-    groups:
-     - name: cpu-high-usage.rules
-       rules:
-         - alert: CPUUsageHigh
-           expr: (100 * (1 - avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])))) > 90
-           for: 1m
-           labels:
-             severity: critical
-           annotations:
-             summary: "High CPU usage detected on {{ $labels.instance }}"
-             description: "CPU usage on {{ $labels.instance }} is {{ humanize $value }}"
+additionalPrometheusRulesMap: {}
+#  rule-name:
+#    groups:
+#    - name: my_group
+#      rules:
+#      - record: my_record
+#        expr: 100 * my_record
 
 ##
 global:
@@ -305,7 +300,46 @@ alertmanager:
   ## ref: https://prometheus.io/docs/alerting/configuration/#configuration-file
   ##      https://prometheus.io/webtools/alerting/routing-tree-editor/
   ##
-  
+  config:
+    global:
+      resolve_timeout: 5m
+    inhibit_rules:
+      - source_matchers:
+          - 'severity = critical'
+        target_matchers:
+          - 'severity =~ warning|info'
+        equal:
+          - 'namespace'
+          - 'alertname'
+      - source_matchers:
+          - 'severity = warning'
+        target_matchers:
+          - 'severity = info'
+        equal:
+          - 'namespace'
+          - 'alertname'
+      - source_matchers:
+          - 'alertname = InfoInhibitor'
+        target_matchers:
+          - 'severity = info'
+        equal:
+          - 'namespace'
+      - target_matchers:
+          - 'alertname = InfoInhibitor'
+    route:
+      group_by: ['namespace']
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 12h
+      receiver: 'null'
+      routes:
+      - receiver: 'null'
+        matchers:
+          - alertname = "Watchdog"
+    receivers:
+    - name: 'null'
+    templates:
+    - '/etc/alertmanager/config/*.tmpl'
 
   ## Alertmanager configuration directives (as string type, preferred over the config hash map)
   ## stringConfig will be used only, if tplConfig is true
@@ -322,24 +356,7 @@ alertmanager:
   ##      https://prometheus.io/docs/alerting/configuration/#tmpl_string
   ##      https://prometheus.io/docs/alerting/notifications/
   ##      https://prometheus.io/docs/alerting/notification_examples/
-  tplConfig: true
-  
-  telegram-template.tmpl: |-
-        {{ define "cluster" }}{{ .ExternalURL | reReplaceAll ".*alertmanager\\.(.*)" "$1" }}{{ end }}
-
-        {{ define "telegram.cpuusage" }}
-        {{- $root := . -}}
-        {{ range .Alerts }}
-          *Alert:* {{ .Annotations.summary }} - `{{ .Labels.severity }}`
-          *Instance:* {{ .Labels.instance }}
-          *Description:* {{ .Annotations.description }}
-          *Value:* {{ $value := .ValueString }}{{ if eq $value "" }}N/A{{ else }}{{ $value }}{{ end }}
-          *Details:*
-            {{ range .Labels.SortedPairs }} - *{{ .Name }}:* `{{ .Value }}`
-            {{ end }}
-        {{ end }}
-        {{ end }}
-     
+  tplConfig: false
 
   ## Alertmanager template files to format alerts
   ## By default, templateFiles are placed in /etc/alertmanager/config/ and if
@@ -348,7 +365,8 @@ alertmanager:
   ## config.templates above to include those suffixes.
   ## ref: https://prometheus.io/docs/alerting/notifications/
   ##      https://prometheus.io/docs/alerting/notification_examples/
-  #
+  ##
+  templateFiles: {}
   #
   ## An example template:
   #   template_1.tmpl: |-
@@ -626,32 +644,9 @@ alertmanager:
   ## ref: https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#alertmanagerspec
   ##
   alertmanagerSpec:
-    config:
-      global:
-        resolve_timeout: 5m
-      route:
-        group_by: ['alertname']
-        group_wait: 30s
-        group_interval: 5m
-        repeat_interval: 12h
-        receiver: 'telegram'
-      receivers:
-      - name: 'telegram'
-        webhook_configs:
-        - url: 'https://api.telegram.org/bot<your-telegram-bot-token>/sendMessage'
-          send_resolved: true
-          http_config:
-            headers:
-              Content-Type: 'application/json'
-          template: |
-            {
-              "chat_id": "<your-telegram-chat-id>",
-              "text": "{{ range .Alerts }}{{ .Annotations.summary }}\n{{ end }}"
-            }
     ## Standard object's metadata. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#metadata
     ## Metadata Labels and Annotations gets propagated to the Alertmanager pods.
     ##
-    
     podMetadata: {}
 
     ## Image of Alertmanager
@@ -679,8 +674,7 @@ alertmanager:
     ## ConfigMaps is a list of ConfigMaps in the same namespace as the Alertmanager object, which shall be mounted into the Alertmanager Pods.
     ## The ConfigMaps are mounted into /etc/alertmanager/configmaps/.
     ##
-    configMaps:
-
+    configMaps: []
 
     ## ConfigSecret is the name of a Kubernetes Secret in the same namespace as the Alertmanager object, which contains configuration for
     ## this Alertmanager instance. Defaults to 'alertmanager-' The secret is mounted into /etc/alertmanager/config.
@@ -723,13 +717,13 @@ alertmanager:
     #         - example-namespace-2
 
     ## Example which selects all namespaces with label "alertmanagerconfig" set to "enabled"
-    alertmanagerConfigNamespaceSelector:
-       matchLabels:
-         alertmanagerconfig: enabled
+    # alertmanagerConfigNamespaceSelector:
+    #   matchLabels:
+    #     alertmanagerconfig: enabled
 
     ## AlermanagerConfig to be used as top level configuration
     ##
-    alertmanagerConfiguration:
+    alertmanagerConfiguration: {}
     ## Example with select a global alertmanagerconfig
     # alertmanagerConfiguration:
     #   name: global-alertmanager-Configuration
@@ -2110,7 +2104,6 @@ nodeExporter:
       enabled: true
     darwin:
       enabled: true
-
 
   ## ForceDeployDashboard Create dashboard configmap even if nodeExporter deployment has been disabled
   ##
@@ -3546,11 +3539,11 @@ prometheus:
     query: {}
 
     ## If nil, select own namespace. Namespaces to be selected for PrometheusRules discovery.
-    #ruleNamespaceSelector: {}
+    ruleNamespaceSelector: {}
     ## Example which selects PrometheusRules in namespaces with label "prometheus" set to "somelabel"
-    ruleNamespaceSelector:
-      matchLabels:
-         name: monitoring
+    # ruleNamespaceSelector:
+    #   matchLabels:
+    #     prometheus: somelabel
 
     ## If true, a nil or {} value for prometheus.prometheusSpec.ruleSelector will cause the
     ## prometheus resource to be created with selectors based on values in the helm deployment,
@@ -3561,9 +3554,7 @@ prometheus:
     ## PrometheusRules to be selected for target discovery.
     ## If {}, select all PrometheusRules
     ##
-    ruleSelector:
-      matchLabels:
-        role: prometheus-rulefiles
+    ruleSelector: {}
     ## Example which select all PrometheusRules resources
     ## with label "prometheus" with values any of "example-rules" or "example-rules-2"
     # ruleSelector:
@@ -4613,9 +4604,9 @@ thanosRuler:
       # - name: remote-write.config
       #   value: |-
       #     "remote_write":
-      #     - "name": "-0"
+      #     - "name": "receiver-0"
       #       "remote_timeout": "30s"
-      #       "url": "http://thanos--0.thanos-:8081/api/v1/receive"
+      #       "url": "http://thanos-receiver-0.thanos-receiver:8081/api/v1/receive"
 
     ## Define which Nodes the Pods are scheduled on.
     ## ref: https://kubernetes.io/docs/user-guide/node-selection/
