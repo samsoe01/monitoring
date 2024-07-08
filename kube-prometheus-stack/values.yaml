@@ -723,9 +723,9 @@ alertmanager:
     #         - example-namespace-2
 
     ## Example which selects all namespaces with label "alertmanagerconfig" set to "enabled"
-    # alertmanagerConfigNamespaceSelector:
-    #   matchLabels:
-    #     alertmanagerconfig: enabled
+     alertmanagerConfigNamespaceSelector:
+       matchLabels:
+         alertmanagerconfig: enabled
 
     ## AlermanagerConfig to be used as top level configuration
     ##
@@ -3546,11 +3546,11 @@ prometheus:
     query: {}
 
     ## If nil, select own namespace. Namespaces to be selected for PrometheusRules discovery.
-    ruleNamespaceSelector: {}
+    #ruleNamespaceSelector: {}
     ## Example which selects PrometheusRules in namespaces with label "prometheus" set to "somelabel"
-    # ruleNamespaceSelector:
-    #   matchLabels:
-    #     prometheus: somelabel
+     ruleNamespaceSelector:
+       matchLabels:
+         name: monitoring
 
     ## If true, a nil or {} value for prometheus.prometheusSpec.ruleSelector will cause the
     ## prometheus resource to be created with selectors based on values in the helm deployment,
@@ -3563,7 +3563,7 @@ prometheus:
     ##
     ruleSelector:
       matchLabels:
-        role: kube-prometheus-rules
+        role: prometheus-rulefiles
     ## Example which select all PrometheusRules resources
     ## with label "prometheus" with values any of "example-rules" or "example-rules-2"
     # ruleSelector:
