@@ -701,7 +701,6 @@ alertmanager:
     ## Example with select a global alertmanagerconfig
     # alertmanagerConfiguration:
     #   name: global-alertmanager-Configuration
-      global:
         resolve_timeout: 5m
       
       route:
