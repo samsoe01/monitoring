@@ -3549,7 +3549,7 @@ prometheus:
     #ruleNamespaceSelector: {}
     ## Example which selects PrometheusRules in namespaces with label "prometheus" set to "somelabel"
     ruleNamespaceSelector:
-       matchLabels:
+      matchLabels:
          name: monitoring
 
     ## If true, a nil or {} value for prometheus.prometheusSpec.ruleSelector will cause the
