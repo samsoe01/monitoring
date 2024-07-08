@@ -5,22 +5,14 @@ metadata:
   namespace: monitoring
 spec:
 route:
-  group_by: ['alertname']
-  group_wait: 30s
-  group_interval: 5m
-  repeat_interval: 12h
-  receiver: 'telegram'
+  - match:
+      severity: NodeCPUHighUsage
+    receiver: telegram
 
 receivers:
- - name: 'telegram'
-  webhook_configs:
-  - url: 'https://api.telegram.org/bot7208954720:AAE8Al5px1vySbT51sZce5mIkyPQGsxzmoo/sendMessage'
-    send_resolved: true
-    http_config:
-      headers:
-        Content-Type: 'application/json'
-    template: |
-      {
-        "chat_id": "6754368173",
-        "text": "{{ range .Alerts }}{{ .Annotations.summary }}\n{{ end }}"
-      }
+- name: 'telegram'
+  telegram_configs:
+  - bot_token: 7208954720:AAE8Al5px1vySbT51sZce5mIkyPQGsxzmoo
+    api_url: https://api.telegram.org
+    chat_id: 6754368173
+    parse_mode: ''
