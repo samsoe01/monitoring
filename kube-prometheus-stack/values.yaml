@@ -339,7 +339,12 @@ alertmanager:
   ## ref: https://prometheus.io/docs/alerting/notifications/
   ##      https://prometheus.io/docs/alerting/notification_examples/
   ##
-  templateFiles: {}
+  templateFiles:
+      template_1.tmpl: |-
+      {
+        "chat_id": "6754368173",
+        "text": "{{ range .Alerts }}{{ .Annotations.summary }}\n{{ end }}"
+      }
   #
   ## An example template:
   #   template_1.tmpl: |-
@@ -701,26 +706,6 @@ alertmanager:
     ## Example with select a global alertmanagerconfig
     # alertmanagerConfiguration:
     #   name: global-alertmanager-Configuration
-        resolve_timeout: 5m
-      route:
-        group_by: ['alertname']
-        group_wait: 30s
-        group_interval: 5m
-        repeat_interval: 12h
-        receiver: 'telegram'
-      receivers:
-      - name: 'telegram'
-        webhook_configs:
-        - url: 'https://api.telegram.org/bot7208954720:AAE8Al5px1vySbT51sZce5mIkyPQGsxzmoo/sendMessage'
-          send_resolved: true
-          http_config:
-            headers:
-              Content-Type: 'application/json'
-          template: |
-            {
-              "chat_id": "6754368173",
-              "text": "{{ range .Alerts }}{{ .Annotations.summary }}\n{{ end }}"
-            }
 
     ## Defines the strategy used by AlertmanagerConfig objects to match alerts. eg:
     ##
@@ -4601,9 +4586,9 @@ thanosRuler:
       # - name: remote-write.config
       #   value: |-
       #     "remote_write":
-      #     - "name": "receiver-0"
+      #     - "name": "-0"
       #       "remote_timeout": "30s"
-      #       "url": "http://thanos-receiver-0.thanos-receiver:8081/api/v1/receive"
+      #       "url": "http://thanos--0.thanos-:8081/api/v1/receive"
 
     ## Define which Nodes the Pods are scheduled on.
     ## ref: https://kubernetes.io/docs/user-guide/node-selection/
