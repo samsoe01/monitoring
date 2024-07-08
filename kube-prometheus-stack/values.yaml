@@ -338,13 +338,7 @@ alertmanager:
   ## config.templates above to include those suffixes.
   ## ref: https://prometheus.io/docs/alerting/notifications/
   ##      https://prometheus.io/docs/alerting/notification_examples/
-  ##
-  templateFiles:
-      template_1.tmpl: |-
-      {
-        "chat_id": "6754368173",
-        "text": "{{ range .Alerts }}{{ .Annotations.summary }}\n{{ end }}"
-      }
+  #
   #
   ## An example template:
   #   template_1.tmpl: |-
