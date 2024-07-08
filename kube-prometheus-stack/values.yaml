@@ -322,22 +322,22 @@ alertmanager:
   ##      https://prometheus.io/docs/alerting/configuration/#tmpl_string
   ##      https://prometheus.io/docs/alerting/notifications/
   ##      https://prometheus.io/docs/alerting/notification_examples/
-  tplConfig: true
-     telegram-template.tmpl: |-
-         {{ define "cluster" }}{{ .ExternalURL | reReplaceAll ".*alertmanager\\.(.*)" "$1" }}{{ end }}
-  
-         {{ define "telegram.cpuusage" }}
-         {{- $root := . -}}
-         {{ range .Alerts }}
-           *Alert:* {{ .Annotations.summary }} - `{{ .Labels.severity }}`
-           *Instance:* {{ .Labels.instance }}
-           *Description:* {{ .Annotations.description }}
-           *Value:* {{ $value := .ValueString }}{{ if eq $value "" }}N/A{{ else }}{{ $value }}{{ end }}
-           *Details:*
-             {{ range .Labels.SortedPairs }} - *{{ .Name }}:* `{{ .Value }}`
-             {{ end }}
-         {{ end }}
-         {{ end }}
+    tplConfig: true
+      telegram-template.tmpl: |-
+        {{ define "cluster" }}{{ .ExternalURL | reReplaceAll ".*alertmanager\\.(.*)" "$1" }}{{ end }}
+
+        {{ define "telegram.cpuusage" }}
+        {{- $root := . -}}
+        {{ range .Alerts }}
+          *Alert:* {{ .Annotations.summary }} - `{{ .Labels.severity }}`
+          *Instance:* {{ .Labels.instance }}
+          *Description:* {{ .Annotations.description }}
+          *Value:* {{ $value := .ValueString }}{{ if eq $value "" }}N/A{{ else }}{{ $value }}{{ end }}
+          *Details:*
+            {{ range .Labels.SortedPairs }} - *{{ .Name }}:* `{{ .Value }}`
+            {{ end }}
+        {{ end }}
+        {{ end }}
      
 
   ## Alertmanager template files to format alerts
