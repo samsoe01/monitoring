@@ -1,19 +1,6 @@
 # Default values for kube-prometheus-stack.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-prometheusRule:
-  prometheusRuleSpec:
-    groups:
-    - name: cpu-high-usage.rules
-      rules:
-      - alert: CPUUsageHigh
-        expr: (100 * (1 - avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])))) > 90
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          summary: "High CPU usage detected on {{ $labels.instance }}"
-          description: "CPU usage on {{ $labels.instance }} is {{ humanize $value }}"
 ## Provide a name in place of kube-prometheus-stack for `app:` labels
 ##
 nameOverride: ""
@@ -204,12 +191,18 @@ defaultRules:
 ## Provide custom recording or alerting rules to be deployed into the cluster.
 ##
 additionalPrometheusRulesMap: {}
-#  rule-name:
-#    groups:
-#    - name: my_group
-#      rules:
-#      - record: my_record
-#        expr: 100 * my_record
+  rule-name: cpuusage
+    groups:
+     - name: cpu-high-usage.rules
+       rules:
+       - alert: CPUUsageHigh
+         expr: (100 * (1 - avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])))) > 90
+         for: 1m
+         labels:
+           severity: critical
+         annotations:
+           summary: "High CPU usage detected on {{ $labels.instance }}"
+           description: "CPU usage on {{ $labels.instance }} is {{ humanize $value }}"
 
 ##
 global:
@@ -329,7 +322,23 @@ alertmanager:
   ##      https://prometheus.io/docs/alerting/configuration/#tmpl_string
   ##      https://prometheus.io/docs/alerting/notifications/
   ##      https://prometheus.io/docs/alerting/notification_examples/
-  tplConfig: false
+  tplConfig: true
+     telegram-template.tmpl: |-
+         {{ define "cluster" }}{{ .ExternalURL | reReplaceAll ".*alertmanager\\.(.*)" "$1" }}{{ end }}
+  
+         {{ define "telegram.cpuusage" }}
+         {{- $root := . -}}
+         {{ range .Alerts }}
+           *Alert:* {{ .Annotations.summary }} - `{{ .Labels.severity }}`
+           *Instance:* {{ .Labels.instance }}
+           *Description:* {{ .Annotations.description }}
+           *Value:* {{ $value := .ValueString }}{{ if eq $value "" }}N/A{{ else }}{{ $value }}{{ end }}
+           *Details:*
+             {{ range .Labels.SortedPairs }} - *{{ .Name }}:* `{{ .Value }}`
+             {{ end }}
+         {{ end }}
+         {{ end }}
+     
 
   ## Alertmanager template files to format alerts
   ## By default, templateFiles are placed in /etc/alertmanager/config/ and if
@@ -647,7 +656,28 @@ alertmanager:
     ## ConfigMaps is a list of ConfigMaps in the same namespace as the Alertmanager object, which shall be mounted into the Alertmanager Pods.
     ## The ConfigMaps are mounted into /etc/alertmanager/configmaps/.
     ##
-    configMaps: []
+    configMaps:
+      global:
+        resolve_timeout: 5m
+      route:
+        group_by: ['alertname']
+        group_wait: 30s
+        group_interval: 5m
+        repeat_interval: 12h
+        receiver: 'telegram'
+      receivers:
+      - name: 'telegram'
+        webhook_configs:
+        - url: 'https://api.telegram.org/bot<your-telegram-bot-token>/sendMessage'
+          send_resolved: true
+          http_config:
+            headers:
+              Content-Type: 'application/json'
+          template: |
+            {
+              "chat_id": "<your-telegram-chat-id>",
+              "text": "{{ range .Alerts }}{{ .Annotations.summary }}\n{{ end }}"
+            }
 
     ## ConfigSecret is the name of a Kubernetes Secret in the same namespace as the Alertmanager object, which contains configuration for
     ## this Alertmanager instance. Defaults to 'alertmanager-' The secret is mounted into /etc/alertmanager/config.
