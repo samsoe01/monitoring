@@ -11,6 +11,10 @@ spec:
   source:
     repoURL: https://github.com/samsoe01/monitoring  # URL of your Git repository
     path: kube-prometheus-stack  # Path to the kube-prometheus-stack chart directory within your repo
+    helm:
+      values: |
+        prometheus-node-exporter:
+          hostRootFsMount: false
   syncPolicy:
     automated:
       prune: true  # Delete resources not defined in Git
