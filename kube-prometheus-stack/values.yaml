@@ -723,7 +723,8 @@ alertmanager:
 
     ## AlermanagerConfig to be used as top level configuration
     ##
-    alertmanagerConfiguration: {}
+    alertmanagerConfiguration:
+      name: alertmanager-config
     ## Example with select a global alertmanagerconfig
     # alertmanagerConfiguration:
     #   name: global-alertmanager-Configuration
