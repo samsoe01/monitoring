@@ -647,6 +647,31 @@ alertmanager:
     ## Standard object's metadata. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#metadata
     ## Metadata Labels and Annotations gets propagated to the Alertmanager pods.
     ##
+    config:
+      global:
+        resolve_timeout: 5m
+      route:
+        group_by: ['alertname']
+        group_wait: 30s
+        group_interval: 5m
+        repeat_interval: 12h
+        receiver: 'telegram'
+      receivers:
+      - name: 'telegram'
+        webhook_configs:
+        - url: 'https://api.telegram.org/bot<your-telegram-bot-token>/sendMessage'
+          send_resolved: true
+          http_config:
+            headers:
+              Content-Type: 'application/json'
+          template: |
+            {
+              "chat_id": "<your-telegram-chat-id>",
+              "text": "{{ range .Alerts }}{{ .Annotations.summary }}\n{{ end }}"
+            }
+
+
+    
     podMetadata: {}
 
     ## Image of Alertmanager
