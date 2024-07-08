@@ -1,7 +1,19 @@
 # Default values for kube-prometheus-stack.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-
+prometheusRule:
+  prometheusRuleSpec:
+    groups:
+    - name: cpu-high-usage.rules
+      rules:
+      - alert: CPUUsageHigh
+        expr: (100 * (1 - avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])))) > 90
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High CPU usage detected on {{ $labels.instance }}"
+          description: "CPU usage on {{ $labels.instance }} is {{ humanize $value }}"
 ## Provide a name in place of kube-prometheus-stack for `app:` labels
 ##
 nameOverride: ""
