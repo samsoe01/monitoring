@@ -1137,56 +1137,7 @@ grafana:
 
   ## Configure additional grafana datasources (passed through tpl)
   ## ref: http://docs.grafana.org/administration/provisioning/#datasources
-  additionalDataSources:
-  additionalDashboards:
-    node-exporter-dashboard:
-      json: |
-        {
-          "annotations": {
-            "list": [
-              {
-                "builtIn": 1,
-                "datasource": "-- Grafana --",
-                "enable": true,
-                "hide": true,
-                "iconColor": "rgba(0, 211, 255, 1)",
-                "name": "Annotations & Alerts",
-                "type": "dashboard"
-              }
-            ]
-          },
-          "panels": [
-            {
-              "datasource": "Prometheus",
-              "targets": [
-                {
-                  "expr": "sum(rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) by (instance)",
-                  "format": "time_series",
-                  "interval": "",
-                  "legendFormat": "{{ instance }}",
-                  "refId": "A"
-                }
-              ],
-              "title": "CPU Usage",
-              "type": "graph"
-            },
-            {
-              "datasource": "Prometheus",
-              "targets": [
-                {
-                  "expr": "sum(node_memory_MemAvailable_bytes) by (instance) / sum(node_memory_MemTotal_bytes) by (instance)",
-                  "format": "time_series",
-                  "interval": "",
-                  "legendFormat": "{{ instance }}",
-                  "refId": "B"
-                }
-              ],
-              "title": "Memory Usage",
-              "type": "graph"
-            }
-          ],
-          "title": "Node Exporter Dashboard"
-        }
+  additionalDataSources: []
   # - name: prometheus-sample
   #   access: proxy
   #   basicAuth: true
