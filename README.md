@@ -1,6 +1,5 @@
 # Monitoring for k8s cluster
 
-```
 Preparing a Kubernetes Cluster
 
 1. Install Docker Desktop Download and Install Docker Desktop:
@@ -29,7 +28,7 @@ or create new user with admin rights:
 kubectl create clusterrolebinding kube-ds-admin-role-binding --clusterrole=cluster-admin --user="system:serviceaccount:kube-system:kube-ds-admin"
 kubectl create token kube-ds-admin -n kube-system`
 
-#Deploy Automation Stack
+### Prepare ArgoCD
 2. Install ArgoCD
 
 Create a namespace for ArgoCD: `kubectl create namespace argocd` Install ArgoCD in the created namespace: `kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml -n argocd `
@@ -43,12 +42,14 @@ Open a browser and go to `https://localhost:8080.`
 Login with username admin and the password retrieved in the previous step.
 
 
-#Deploy Monitoring
+### Deploy Monitoring
 3. Set up a Git Repository
 https://github.com/samsoe01/monitoring
 Copy chart kube-prometheus-stack from `https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack` and add it to git repo
+then apply this
 `kubectl apply -f monitoring1.yml`
 after applying this manifest Grafana, Prmetheus,Alertmanager, NodeExporter, prometheus-operator will be deployed with argocd.
 Grafana dashboards and alert rules are included in this chart.
 
 Access grafana dashboard using `kubectl port-forward -n monitoring svc/grafana 3000:80` and go to `http://localhost:3000 username: admin passwd: check secret`
+`kubectl get secret --namespace monitoring monitoring-grafana -o jsonpath='{.data.admin-password}' | base64 -d`
