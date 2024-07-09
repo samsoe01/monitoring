@@ -42,9 +42,8 @@ Open a browser and go to `https://localhost:8080.`
 ### Deploy Monitoring
 3. Set up a Git Repository
 https://github.com/samsoe01/monitoring
-Copy chart kube-prometheus-stack from `https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack` and add it to git repo
-then apply this
-`kubectl apply -f monitoring1.yml`
+Using chart from kube-prometheus-stack from `https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack` 
+`kubectl apply -f monitoring.yml`
 after applying this manifest Grafana, Prmetheus,Alertmanager, NodeExporter, prometheus-operator will be deployed with argocd.
 Grafana dashboards and alert rules are included in this chart.
 
