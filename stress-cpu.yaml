@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: cpu-stress-test
+spec:
+  containers:
+  - name: stress-ng
+    image: polinux/stress
+    command: ["stress"]
+    args:
+      - "--cpu"
+      - "4"
+      - "--timeout"
+      - "60s"
+  restartPolicy: Never
