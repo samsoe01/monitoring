@@ -39,9 +39,6 @@ view secret for password
 `kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d`
 Open a browser and go to `https://localhost:8080.`
 
-Login with username admin and the password retrieved in the previous step.
-
-
 ### Deploy Monitoring
 3. Set up a Git Repository
 https://github.com/samsoe01/monitoring
