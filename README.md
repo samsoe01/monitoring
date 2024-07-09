@@ -51,5 +51,5 @@ Access grafana dashboard using `kubectl port-forward -n monitoring svc/grafana 3
 `kubectl get secret --namespace monitoring monitoring-grafana -o jsonpath='{.data.admin-password}' | base64 -d`
 
 ### Stress-test
-To run a CPU-specific stress test in a Kubernetes pod apply manifest  `kubectl apply -f stress-cpu.yaml`
+To run a CPU stress test in a Kubernetes pod apply manifest  `kubectl apply -f stress-cpu.yaml`
 
