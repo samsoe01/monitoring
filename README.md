@@ -27,7 +27,6 @@ kubectl create sa kube-ds-admin -n kube-system
 kubectl create clusterrolebinding kube-ds-admin-role-binding --clusterrole=cluster-admin --user="system:serviceaccount:kube-system:kube-ds-admin"
 kubectl create token kube-ds-admin -n kube-system
 
-Install Vault, this should be installed using ArgoCD. helm repo add hashicorp https://helm.releases.hashicorp.com helm install vault hashicorp/vault -n vault
 
 Deploy Automation Stack
 Step 2.1: Install ArgoCD
