@@ -44,16 +44,9 @@ Login with username admin and the password retrieved in the previous step.
 Deploy Monitoring
 3.1: Set up a Git Repository
  https://github.com/samsoe01/monitoring
-Copy chart kube-prometheus-stack and add it to git repo
+Copy chart kube-prometheus-stack from https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack and add it to git repo
 kubectl apply -f monitoring1.yml
 after applying this manifest Grafana, Prmetheus,Alertmanager, NodeExporter, prometheus-operator will be deployed with argocd.
 Grafana dashboards and alert rules are included in this chart.
 
 Step 3.2: Access grafana dashboard using kubectl port-forward -n monitoring svc/grafana 3000:80 and go to http://localhost:3000 username: admin passwd: check secret
-
-Using dashboard Node Exporter / Nodes which is included in /kube-promehtues-stack, for monitoring cpu usage and setting up alert if usage is more that 90%. dashboard json file is added in this repo. Alert message is sent to telegram bot. Contact point and alert rule files has been added to this repository. Alert rule file has to be edited at line 23 to add instance ip address, which is k8s node ip address.
-
-Use ArgoCD for creating monitoring stack:
-kubectl apply -f monitoring1.yaml -n monitoring
-Login to ArgoUI: username: admin passwd: check secret
-
