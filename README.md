@@ -32,9 +32,9 @@ kubectl create token kube-ds-admin -n kube-system`
 2. Install ArgoCD
 
 Create a namespace for ArgoCD: `kubectl create namespace argocd` Install ArgoCD in the created namespace: `kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml -n argocd `
-kubectl port-forward svc/argocd-server -n argocd 8080:443
+then `kubectl port-forward svc/argocd-server -n argocd 8080:443`
 Access ArgoCD UI
-username: admin
+`username: admin`
 view secret for password
 `kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d`
 Open a browser and go to `https://localhost:8080.`
