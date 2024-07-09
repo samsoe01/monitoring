@@ -1,7 +1,8 @@
 # Monitoring for k8s cluster
 
-Prepare a Kubernetes Cluster
 ```
+Preparing a Kubernetes Cluster
+
 1. Install Docker Desktop Download and Install Docker Desktop:
 
 Go to the Docker Desktop download page and download the installer for your operating system.
@@ -27,8 +28,8 @@ or create new user with admin rights:
 kubectl create sa kube-ds-admin -n kube-system
 kubectl create clusterrolebinding kube-ds-admin-role-binding --clusterrole=cluster-admin --user="system:serviceaccount:kube-system:kube-ds-admin"
 kubectl create token kube-ds-admin -n kube-system
-
-
+```
+```
 #Deploy Automation Stack
 2. Install ArgoCD
 
@@ -41,7 +42,8 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 Open a browser and go to https://localhost:8080.
 
 Login with username admin and the password retrieved in the previous step.
-
+```
+```
 #Deploy Monitoring
 3. Set up a Git Repository
 https://github.com/samsoe01/monitoring
