@@ -7,6 +7,7 @@ Prepare a Kubernetes Cluster
 Go to the Docker Desktop download page and download the installer for your operating system.
 
 Enable Kubernetes in Docker Desktop: Open Docker Desktop. Go to Settings (click the gear icon). Navigate to the Kubernetes tab. Check the box Enable Kubernetes. Click Apply & Restart.
+Single node cluster will be crated.
 
 Access k8s dashboard:
 
