@@ -50,6 +50,3 @@ Grafana dashboards and alert rules are included in this chart.
 Access grafana dashboard using `kubectl port-forward -n monitoring svc/grafana 3000:80` and go to `http://localhost:3000 username: admin passwd: check secret`
 `kubectl get secret --namespace monitoring monitoring-grafana -o jsonpath='{.data.admin-password}' | base64 -d`
 
-### Stress-test
-To run a CPU stress test in a Kubernetes pod apply manifest  `kubectl apply -f stress-cpu.yaml`
-
